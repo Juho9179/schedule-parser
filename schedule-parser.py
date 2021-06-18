@@ -1,17 +1,40 @@
 ################
 #
-# Parser
+#   Schedule-parser v 1.0
+#
+#   python3 .\schedule-parser.py NAME '.\schedule.xlsx'
+#   -> creates a new file, in the same directory as .xlsx file with same name, but .csv extension.
+#   -> OVERWRITES old file, should it exist.
 #
 ################
 import openpyxl
 import sys
-
 year_variable = "20"
 date_delimiter = "/"
 filename = ""
 employee_name = ""
 workbook = ""
 ws = ""
+headers = ["Subject", '"Start Date"', '"End Date"', "Private"]
+private = "true"
+
+# saves csv data to file
+def save_csv(csv, output_filename):
+    with open(output_filename, "w") as output:
+        print(csv, file=output)
+
+# gets CSV from data list of shifts
+def get_csv(headers, data):
+    csv = ''
+    # import headers
+    for i in headers:
+        csv += i + ","
+    # remove tailing ,
+    csv = csv[:-1] + "\n"
+    # add shifts
+    for shift in data:
+        csv += '"' + shift["detail"] + '",' + shift["date"] +',' + shift["date"] + "," + private + "\n"
+    return csv
 
 # Initialises file name and employee name.
 def init():
@@ -28,6 +51,9 @@ def init():
     workbook = openpyxl.load_workbook(filename)
     ws = workbook.active
 
+# Returns shift for specific employee on a specific date
+# Returns
+# {'date': '15/06/21', 'detail': '0:00-8:00 '}
 def get_shift(employee_row_info, date_info):
     global ws
     # checks employee row info according to date
@@ -116,16 +142,17 @@ def get_row_info(employee_name):
 
     return row_info
 
-def main():
-    init()
-    all_dates = get_dates()
-
-    for i in all_dates:
+def get_all_shifts(dates_list, employee_name):
+    all_shifts = []
+    for i in dates_list:
         shift = get_shift(get_row_info(employee_name), i)
         if (shift != None):
-            print(shift)
+            all_shifts.append(shift)
+    return all_shifts
 
-    return
+def main():
+    init()
+    save_csv(get_csv(headers, get_all_shifts(get_dates(), employee_name)), filename + ".csv")
 
 if __name__ == "__main__":
     main()
