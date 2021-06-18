@@ -5,8 +5,28 @@
 ################
 
 import openpyxl
-workbook = openpyxl.load_workbook("./test-material/ENSIH9_21(14.6-4.7).xlsx")
-ws = workbook.active
+import openpyxl.utils as utils
+import sys
+
+filename = ""
+employee_name = ""
+workbook = ""
+ws = ""
+
+# Initialises file name and employee name.
+def init():
+    global filename
+    global employee_name
+    global workbook
+    global ws
+    argument_list = sys.argv[1:]
+    for i in argument_list:
+        if i.endswith(".xlsx"):
+            filename = argument_list.pop(argument_list.index(i))
+    employee_name = ' '.join(argument_list)
+    
+    workbook = openpyxl.load_workbook(filename)
+    ws = workbook.active
 
 year_variable = "20"
 date_delimiter = "/"
@@ -77,9 +97,7 @@ def get_row_info(employee_name):
     return row_info
 
 def main():
-    # parse  n stuf
-    #print(get_row_info("EH9"))
-    print(get_dates())
+    init()
     return
 
 if __name__ == "__main__":
