@@ -3,11 +3,11 @@
 # Parser
 #
 ################
-
 import openpyxl
-import openpyxl.utils as utils
 import sys
 
+year_variable = "20"
+date_delimiter = "/"
 filename = ""
 employee_name = ""
 workbook = ""
@@ -28,8 +28,25 @@ def init():
     workbook = openpyxl.load_workbook(filename)
     ws = workbook.active
 
-year_variable = "20"
-date_delimiter = "/"
+def get_shift(employee_row_info, date_info):
+    global ws
+    # checks employee row info according to date
+    # checks whether row_info is dual or singular row and returns information accordingly
+    shift = {}
+    shift["date"] = date_info[0]
+    # check if no shift, if no shift: return None
+    actual_shift = ws.cell(employee_row_info["row"], date_info[1]).internal_value
+    if (actual_shift == None):
+        return None
+    shift["detail"] = ws.cell(employee_row_info["row"], date_info[1]).internal_value.strip()
+    # check whether shift is dual, if dual: concatenate
+    if ((employee_row_info["dual"] == True) and (ws.cell(employee_row_info["row"] + 1, date_info[1] != None))):
+        # check whether there is data in row below
+        shift["detail"] += " " + ws.cell(employee_row_info["row"] + 1, date_info[1]).internal_value.strip()
+
+    if (shift["detail"] == " "):
+        return None
+    return shift
 
 # Gets correct dates for each day in schedule
 # Returns list
@@ -53,12 +70,13 @@ def get_dates():
     counter = 3
     while curr_date != None:
         curr_date = ws.cell(3, counter).internal_value
+        curr_date_column = ws.cell(3, counter).column
         if (curr_date == None):
             break
         if curr_date < initial_date:
-            shift_dates.append(str(curr_date) + date_delimiter + str(end_month) + date_delimiter + str(end_year))
+            shift_dates.append([str(curr_date) + date_delimiter + str(end_month) + date_delimiter + str(end_year), curr_date_column])
         else:
-            shift_dates.append(str(curr_date) + date_delimiter + str(start_month) + date_delimiter + str(start_year))
+            shift_dates.append([str(curr_date) + date_delimiter + str(start_month) + date_delimiter + str(start_year), curr_date_column])
         counter = counter + 1
     return shift_dates
 
@@ -89,6 +107,8 @@ def get_row_info(employee_name):
         next_entry = ws.cell(row_info["row"] + 1, row_info["column"]).internal_value
         if (next_entry == None):
             row_info["dual"] = True
+        elif (next_entry.strip() == ""):
+            row_info["dual"] = True
 
     except TypeError:
         print("ERROR: Employee " + employee_name + " not found.")
@@ -98,6 +118,13 @@ def get_row_info(employee_name):
 
 def main():
     init()
+    all_dates = get_dates()
+
+    for i in all_dates:
+        shift = get_shift(get_row_info(employee_name), i)
+        if (shift != None):
+            print(shift)
+
     return
 
 if __name__ == "__main__":
