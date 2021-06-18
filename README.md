@@ -12,6 +12,17 @@ python3 .\schedule-parser.py EMPLOYEE-NAME '.\schedule.xlsx'
 ```
 Scheduler-parser then creates a new file, in the same directory as .xlsx file with same name, but .csv extension.
 
+# Dependencies
+
+openpyxl: https://openpyxl.readthedocs.io/en/stable/
+
+"openpyxl is a Python library to read/write Excel 2010 xlsx/xlsm/xltx/xltm files."
+
+How to install:
+
+```
+pip install openpyxl
+```
 
 # Example
 dummy_data.xlsx
