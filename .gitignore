@@ -1,3 +1,6 @@
+# Test material
+test-material/*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
