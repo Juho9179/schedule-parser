@@ -29,6 +29,9 @@ workbook = openpyxl.load_workbook("./test-material/ENSIH9_21(14.6-4.7).xlsx")
 
 
 # Returns row number for employee and checks whether dual row or single-row
+# Returns object:
+# {'coordinate': 'B15', 'column': 2, 'row': 15, 'dual': False}
+# Returns False if employee is not found.
 def get_row_info(employee_name):
     row_info = {}
     row_info["coordinate"] = ""
@@ -46,10 +49,17 @@ def get_row_info(employee_name):
                 row_info["row"] = cell.row
                 break
                 
-    # check whether row below is another employee or empty: singular or dual row
-    next_entry = ws.cell(row_info["row"] + 1, row_info["column"]).internal_value
-    if (next_entry == None):
-        row_info["dual"] = True
+
+    # Check for errors
+    try:
+        # check whether row below is another employee or empty: singular or dual row
+        next_entry = ws.cell(row_info["row"] + 1, row_info["column"]).internal_value
+        if (next_entry == None):
+            row_info["dual"] = True
+
+    except TypeError:
+        print("ERROR: Employee " + employee_name + " not found.")
+        return False
 
     return row_info
 
