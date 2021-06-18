@@ -25,7 +25,24 @@
 
 import openpyxl
 import openpyxl.utils as utils
-workbook = openpyxl.load_workbook("./test-material/ENSIH9_21(14.6-4.7).xlsx")
+import sys
+
+filename = ""
+employee_name = ""
+workbook = ""
+
+# Initialises file name and employee name.
+def init():
+    global filename
+    global employee_name
+    global workbook
+    argument_list = sys.argv[1:]
+    for i in argument_list:
+        if i.endswith(".xlsx"):
+            filename = argument_list.pop(argument_list.index(i))
+    employee_name = ' '.join(argument_list)
+    
+    workbook = openpyxl.load_workbook(filename)
 
 
 # Returns row number for employee and checks whether dual row or single-row
@@ -65,7 +82,8 @@ def get_row_info(employee_name):
 
 def main():
     # parse  n stuf
-    print(get_row_info("EH9"))
+    init()
+    print(get_row_info(employee_name))
     return
 
 if __name__ == "__main__":
