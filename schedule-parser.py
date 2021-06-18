@@ -1,6 +1,6 @@
 ################
 #
-#   Schedule-parser v 1.0
+#   Schedule-parser v 0.1
 #
 #   python3 .\schedule-parser.py NAME '.\schedule.xlsx'
 #   -> creates a new file, in the same directory as .xlsx file with same name, but .csv extension.
