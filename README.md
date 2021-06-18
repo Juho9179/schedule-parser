@@ -14,11 +14,11 @@ Scheduler-parser then creates a new file, in the same directory as .xlsx file wi
 
 
 # Example
-![alt text](main/docs/material.png)
+![alt text](/docs/material.png)
 ```
 python3 .\schedule-parser.py AB18 '.\example\dummy_data.xlsx'
 -> outputs AB18's shifts in .\example\dummy_data.xlsx.csv
 ```
-![alt text](main/docs/result.png)
+![alt text](/docs/result.png)
 
 Scheduler-parser then creates a new file, in the same directory as .xlsx file with same name, but .csv extension.
